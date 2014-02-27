@@ -1,7 +1,7 @@
 threes-ai
 =========
 
-An AI for Threes!, the popular iOS game. You can have the AI play or 'cheat' by entering in your own board and having the AI tell you which moves to make.
+An AI for Threes!, the popular iOS game. You can have the AI play by itself in a simulated round, or you can 'cheat' by entering in your own board and having the AI tell you which moves to make.
 
 ##Instructions
 
