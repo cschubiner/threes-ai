@@ -202,7 +202,7 @@ def getNextPos(changes):
   if len(changes) == 1:
     return changes[0]
   if human:
-    return int(input('Enter in position of the new piece: '))
+    return int(input('Enter in the row or column of the new piece (A number between 0 and 3): '))
   return changes[random.randint(0, len(changes)-1)]
 
 def getMove(board, next):
@@ -238,7 +238,7 @@ def start(board):
       return scoreBoard(board)
     actualNext = getActualNextPiece(next)
     nextPos = getNextPos(bestChanges)
-    if verbose: print 'changed pos:', nextPos
+    # if verbose: print 'changed pos:', nextPos
     if bestMove == 'Left Swipe' or bestMove == 'l':
        board[nextPos][3] = actualNext
     elif bestMove == 'Right Swipe' or bestMove == 'r':
@@ -397,18 +397,21 @@ def testAlgorithm(iters):
   # print 'Highscore: ',hs
   return res/float(iters)
 useFuture = True
-human = False
+# human = False
+
+human = raw_input('Do you want to play or have the AI play? (Say "human" or "ai"): ') == 'human'
 verbose = False or human
 
-# weights = [20, -29, 38, 2, 0, 0]
-# weights = [3, 4, 4, -1 ,2]
-weights = [7, 7, 6, 1, 4, 6]
-print testAlgorithm(1)
-sys.exit()
-
 if human:
+  # weights = [3, 4, 4, 1, 2, 8]
+  weights = [7, 7, 6, 1, 4, 8]
+  start(parseBoard(raw_input('Enter in the board (Enter in 16 numbers on one line): ')))
+elif True:
+  verbose = raw_input('Do you want to watch? (Say "yes" or "no"): ') == 'yes'
+  # weights = [7, 7, 6, 1, 4, 6]
   weights = [3, 4, 4, 1, 2, 8]
-  start(parseBoard(raw_input('Enter board on one line: ')))
+  print 'Game complete. Scored:', testAlgorithm(1)
+  sys.exit()
 
 else:
   numWeights = 6
