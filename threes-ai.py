@@ -183,7 +183,7 @@ origDeck = list([1,1,1,1,2,2,2,2,3,3,3,3])
 deck = list()
 def getPredictedPiece():
   if human:
-    return int(input('Enter in the value of the next piece: '))
+    return int(input('Enter in anticipated the value of the next piece: '))
   global deck
   if len(deck) == 0:
     deck = copyArray(origDeck)
@@ -195,7 +195,7 @@ def getPredictedPiece():
 
 def getActualNextPiece(predictedPiece):
   if human and predictedPiece >= 3:
-    return int(input('Enter in the value of the new piece: '))
+    return int(input('Enter in the actual value of the new piece: '))
   return predictedPiece
 
 def getNextPos(changes):
