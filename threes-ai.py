@@ -1,5 +1,5 @@
 # import numpy as np
-import random, math, sys
+import random, math, sys, os
 
 def parseBoard(str):
   nums = str.strip().split()
@@ -305,7 +305,7 @@ def newHScore(board, printShit = False):
   if printShit:
     printBoard(board)
     print zeroes, adjacents, checkerboards, options
-  return zeroes * weights[1] + adjacents * weights[2] + checkerboards * weights[3] + options * .1 * weights[4] + swipeDirs
+  return zeroes * weights[1] + adjacents * weights[2] - checkerboards * weights[3] + options * .1 * weights[4] + swipeDirs
 
 
 def hScoreWithFuture(board):
@@ -313,12 +313,13 @@ def hScoreWithFuture(board):
   global useFuture
   nextScore = 0
   scoreAfter = 0
-  if useFuture:
+  if useFuture and weights[5] >= 3:
     useFuture = False
     nb = getBestMove(board, random.randint(1,3))[1]
     nextScore = newHScore(nb)
-    # nb = getBestMove(nb, random.randint(1,3))[1]
-    # scoreAfter = newHScore(nb)
+    if weights[5] == 8 and True:
+      nb = getBestMove(nb, random.randint(1,3))[1]
+      scoreAfter = newHScore(nb)
     useFuture = True
 
   return hscore + weights[0]/5.0 * nextScore + .2 * scoreAfter
@@ -393,54 +394,57 @@ def testAlgorithm(iters):
     res += score
     if score > hs:
       hs = score
-  print 'Highscore: ',hs
+  # print 'Highscore: ',hs
   return res/float(iters)
 useFuture = True
 human = False
 verbose = False or human
 
 # weights = [20, -29, 38, 2, 0, 0]
-weights = [3, 4, 4, -1 ,2]
+# weights = [3, 4, 4, -1 ,2]
+weights = [7, 7, 6, 1, 4, 6]
 print testAlgorithm(1)
 sys.exit()
 
 if human:
-  weights = [3, 4, 4, -1 ,2]
+  weights = [3, 4, 4, 1, 2, 8]
   start(parseBoard(raw_input('Enter board on one line: ')))
 
 else:
-  numWeights = 5
-  # bestScore = 0
-  # iters = 10
-  # while(True):
-  #   weights = [random.randint(-20, 40) for i in range(numWeights)]
-  #   score = testAlgorithm(2)
-  #   if score > bestScore:
-  #     score = testAlgorithm(iters)
-  #     if score > bestScore:
-  #       bestScore = score
-  #       print score, weights
-  iters = 35
-  weights = [0 for i in range(numWeights)]
-  greatestEver = 0
-  greatestWeights = weights
-  while True:
-    for i in range(numWeights):
-      bestlastval = -40
-      bestScore = 0
-      for j in range(-40, 40, 1):
-        weights[i] = j
-        # score = testAlgorithm(4)
-        # if score > bestScore:
-        score = testAlgorithm(iters)
-        if score > bestScore:
-          bestScore = score
-          bestlastval = j
-          if score > greatestEver:
-            greatestEver = score
-            greatestWeights = copyArray(weights)
-          print score, weights, ' \t - \t ', greatestEver, greatestWeights
-      weights[i] = bestlastval
+  numWeights = 6
+  bestScore = 0
+  iters = 10
+  scoreList = list()
+  scoreMap = dict()
+  while(True):
+    weights = [random.randint(0,8) for i in range(numWeights)]
+    score = testAlgorithm(20)
+    os.system('clear')
+    scoreMap[score] = weights
+    scoreList.append(score)
+    for s in sorted(scoreList):
+      print s, scoreMap[s]
+  # iters = 1
+  # weights = [0 for i in range(numWeights)]
+  # greatestEver = 0
+  # greatestWeights = weights
+  # while True:
+  #   for i in range(numWeights):
+  #     bestlastval = -8
+  #     bestScore = 0
+  #     for j in range(-8, 8, 1):
+  #       weights[i] = j
+  #       # score = testAlgorithm(4)
+  #       # if score > bestScore:
+  #       score = testAlgorithm(iters)
+  #       if score > bestScore:
+  #         bestScore = score
+  #         bestlastval = j
+  #         if score > greatestEver:
+  #           greatestEver = score
+  #           greatestWeights = copyArray(weights)
+  #       print score, weights, ' \t - \t ', greatestEver, greatestWeights
+  #     weights[i] = bestlastval
 
 
 
@@ -459,3 +463,15 @@ else:
 # changes, bd = rightSwipe(bd)
 # print '\n', changes
 # printBoard(bd)
+
+# 3966.9 [2, 8, 6, 1, 0, 7]
+# 4146.0 [5, 7, 4, 0, 5, 8]
+# 4219.05 [8, 6, 6, 3, 0, 6]
+# 4233.9 [1, 7, 7, 2, 2, 8]
+# 4582.05 [6, 2, 3, 0, 3, 4]
+# 4616.7 [8, 2, 3, 1, 8, 8]
+# 4641.45 [8, 5, 5, 1, 4, 5]
+# 4919.4 [5, 5, 2, 1, 5, 8]
+# 4940.7 [7, 7, 4, 2, 2, 4]
+# 4945.8 [7, 8, 6, 1, 1, 5]
+# 6782.4 [7, 7, 6, 1, 4, 6]
