@@ -181,9 +181,13 @@ def pieceValue(piece):
 
 origDeck = list([1,1,1,1,2,2,2,2,3,3,3,3])
 deck = list()
-def getPredictedPiece():
+def getPredictedPiece(bonusDeck):
   if human:
-    return int(input('Enter in anticipated the value of the next piece: '))
+    predictedCard = raw_input('Enter in anticipated the value of the next piece: ')
+    if predictedCard == '+':
+      indchosen = random.randint(0, len(bonusDeck) -1 )
+      predictedCard = bonusDeck[indchosen]
+    return int(predictedCard)
   global deck
   if len(deck) == 0:
     deck = copyArray(origDeck)
@@ -194,7 +198,7 @@ def getPredictedPiece():
 
 
 def getActualNextPiece(predictedPiece):
-  if human and predictedPiece >= 3:
+  if human and predictedPiece > 3:
     return int(input('Enter in the actual value of the new piece: '))
   return predictedPiece
 
@@ -228,9 +232,22 @@ def getMove(board, next):
     bestMove = move
   return bestMove, newboard, bestChanges
 
+def buildBonusDeck(board):
+  highCard = 0;
+  bonusDeck = list()
+  for i in range(4):
+    for j in range(4):
+      if board[i][j] > highCard:
+        highCard = board[i][j]
+  while highCard >= 48:
+    bonusDeck.append(highCard / 8)
+    highCard /= 2
+  return bonusDeck
+
 def start(board):
   while (True):
-    next = getPredictedPiece()
+    bonusDeck = buildBonusDeck(board)
+    next = getPredictedPiece(bonusDeck)
     if verbose: printBoard(board)
     bestMove, board, bestChanges = getMove(board, next)
     if bestMove == 'Game Over':
